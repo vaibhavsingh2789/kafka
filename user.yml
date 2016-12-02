@@ -1,0 +1,20 @@
+---
+- hosts: kafka
+  remote_user: vagrant
+  sudo: yes
+
+  tasks:
+  - name: Add kafka user
+    user: name=kafka password=kafka group=sudo
+
+  - name: Make .ssh directory
+    file:
+      path: /home/kafka/.ssh
+      state: directory
+      mode: 0755
+
+  - name: Copy ssh public key
+    copy:
+      src: authorized_keys
+      dest: /home/kafka/.ssh/authorized_keys
+
