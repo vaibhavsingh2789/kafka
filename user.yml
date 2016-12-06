@@ -1,5 +1,5 @@
 ---
-- hosts: kafka
+- hosts: all
   remote_user: vagrant
   sudo: yes
 

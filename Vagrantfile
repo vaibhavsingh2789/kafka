@@ -1,20 +1,27 @@
 Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 2048
+  end
   config.vm.provision "ansible" do |user|
     user.playbook = "user.yml"
-    user.inventory_path="inventory"
   end
   config.vm.provision "ansible" do |kafka|
     kafka.playbook = "kafka.yml"
-    kafka.inventory_path="inventory"
+    kafka.host_vars = {
+      "kafka1" => {"brokerid" => 0,
+                  "zookc" => "192.168.33.10:2181"},
+      "kafka2" => {"brokerid" => 1,
+                  "zookc" => "192.168.33.10:2181"}
+    }
   end
-  config.vm.define "web" do |web|
-    web.vm.box = "ubuntu14.04"
-    web.vm.network :private_network, ip: "192.168.33.10"
+  config.vm.define "kafka1" do |kafka1|
+    kafka1.vm.box = "ubuntu/trusty64"
+    kafka1.vm.network :private_network, ip: "192.168.33.10"
   end
 
-  config.vm.define "db" do |db|
-    db.vm.box = "ubuntu14.04"
-    db.vm.network :private_network, ip: "192.168.33.11"
+  config.vm.define "kafka2" do |kafka2|
+    kafka2.vm.box = "ubuntu/trusty64"
+    kafka2.vm.network :private_network, ip: "192.168.33.11"
   end
 end
 
